@@ -1,6 +1,6 @@
 # To compile solidity file:
 ```shell
-run npm compile
+npm run compile
 ```
 
 # Sample Hardhat Project
