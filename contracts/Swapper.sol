@@ -54,7 +54,7 @@ contract Swapper {
         return true;
     }
 
-    function accept(string memory txId, bytes memory signature) external { //signature: signature of msg.sender
+    function acceptTx(string memory txId, bytes memory signature) external { //signature: signature of msg.sender
         LockContract storage exchangeTx = transactions[txId];
         require(exchangeTx.from != address(0), "This transaction doesn't exists");
         require(exchangeTx.completed != true && exchangeTx.refunded != true, "This transaction has been done");
