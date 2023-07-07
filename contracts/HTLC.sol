@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Token.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract HTLC {
     struct LockContract {
         address sender;
         address receiver;
-        Token tokenContract;
+        ERC20 tokenContract;
         uint256 amount;
         string key;
         bytes32 hashlock;
@@ -32,8 +32,7 @@ contract HTLC {
         uint256 amount,
         string memory key,
         bytes32 hashlock, 
-        uint256 timelock,
-        bytes memory signature //signature of msg.sender
+        uint256 timelock
     ) public returns (bool) {
         require(transactions[id].sender == address(0), "Duplicate transaction by id");
         require(msg.sender != receiver, "TTransaction invalid");
@@ -41,7 +40,7 @@ contract HTLC {
         transactions[id] = LockContract({
             sender: msg.sender,
             receiver: receiver,
-            tokenContract: Token(token),
+            tokenContract: ERC20(token),
             amount: amount,
             key: key,
             hashlock: hashlock,
@@ -51,7 +50,7 @@ contract HTLC {
             isInProgress: false
         });
 
-        transactions[id].tokenContract.transferToBridge(msg.sender, amount, signature);
+        transactions[id].tokenContract.transferFrom(msg.sender, address(this), amount);
         return true;
     }
 

@@ -2,14 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./Token.sol";
 
 contract Swapper {
     struct LockContract {
         address from;
         address to;
-        Token token_from;
-        Token token_to;
+        ERC20 token_from;
+        ERC20 token_to;
         uint256 amount_from;
         uint256 amount_to;
         uint256 timelock;
@@ -33,16 +32,15 @@ contract Swapper {
         address tokenTo, 
         uint256 amountFrom, 
         uint256 amountTo,
-        uint256 timelock, //hours
-        bytes memory signature //signature of msg.sender
+        uint256 timelock //hours
     ) public returns (bool) {
         require(transactions[id].from == address(0), "Duplicate transaction by id");
         require(tokenFrom != tokenTo, "Only swap between two different token");
         transactions[id] = LockContract({
             from: msg.sender,
             to: address(0),
-            token_from: Token(tokenFrom),
-            token_to: Token(tokenTo),
+            token_from: ERC20(tokenFrom),
+            token_to: ERC20(tokenTo),
             amount_from: amountFrom,
             amount_to: amountTo,
             timelock: block.timestamp + 60 * 60 * timelock,
@@ -50,11 +48,11 @@ contract Swapper {
             refunded: false
         });
 
-        transactions[id].token_from.transferToBridge(msg.sender, transactions[id].amount_from, signature);
+        transactions[id].token_from.transferFrom(msg.sender, address(this), transactions[id].amount_from);
         return true;
     }
 
-    function acceptTx(string memory txId, bytes memory signature) external { //signature: signature of msg.sender
+    function acceptTx(string memory txId) external { 
         LockContract storage exchangeTx = transactions[txId];
         require(exchangeTx.from != address(0), "This transaction doesn't exists");
         require(exchangeTx.completed != true && exchangeTx.refunded != true, "This transaction has been done");
@@ -62,7 +60,7 @@ contract Swapper {
         require(exchangeTx.from != msg.sender, "Can't accept by your self! =))");
         
         exchangeTx.to = msg.sender;
-        exchangeTx.token_to.transferToBridge(exchangeTx.to, exchangeTx.amount_to, signature);
+        exchangeTx.token_to.transferFrom(exchangeTx.to, address(this), exchangeTx.amount_to);
         emit accepted(txId, msg.sender);
 
         swap(txId);
