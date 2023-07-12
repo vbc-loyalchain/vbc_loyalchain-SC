@@ -697,44 +697,6 @@
         "ERC721URIStorage"
       ]
     },
-    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\NFT.sol": {
-      "lastModificationDate": 1687793485718,
-      "contentHash": "286418f5cb3f979ed777af467196c880",
-      "sourceName": "contracts/NFT.sol",
-      "solcConfig": {
-        "version": "0.8.18",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "MyNFT"
-      ]
-    },
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
       "lastModificationDate": 1688383467068,
       "contentHash": "5a20b2cad87ddb61c7a3a6af21289e28",
@@ -881,6 +843,83 @@
       ],
       "artifacts": [
         "Swapper"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\Collection.sol": {
+      "lastModificationDate": 1689137430777,
+      "contentHash": "bad5cef69cae65fcf9f80f1cf1c7b57f",
+      "sourceName": "contracts/Collection.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "./Token.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Collection"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\NFTMarket.sol": {
+      "lastModificationDate": 1689137445281,
+      "contentHash": "35ef9a6ecd248e4b961eee41b86f07de",
+      "sourceName": "contracts/NFTMarket.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Collection.sol",
+        "./Token.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "NFTMarket"
       ]
     }
   }
