@@ -734,43 +734,6 @@
         "Ownable"
       ]
     },
-    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\HTLC.sol": {
-      "lastModificationDate": 1688726636435,
-      "contentHash": "8852b3d674ba1264c957a578fb12c36d",
-      "sourceName": "contracts/HTLC.sol",
-      "solcConfig": {
-        "version": "0.8.18",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "HTLC"
-      ]
-    },
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\node_modules\\@openzeppelin\\contracts\\utils\\cryptography\\ECDSA.sol": {
       "lastModificationDate": 1688383466912,
       "contentHash": "d822a8a9468649cab463f29f5decf5cc",
@@ -920,6 +883,44 @@
       ],
       "artifacts": [
         "NFTMarket"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\SwapTwoChain.sol": {
+      "lastModificationDate": 1689331645134,
+      "contentHash": "ae3f6bf03d2066133d7fba501494f537",
+      "sourceName": "contracts/SwapTwoChain.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "SwapTwoChain"
       ]
     }
   }

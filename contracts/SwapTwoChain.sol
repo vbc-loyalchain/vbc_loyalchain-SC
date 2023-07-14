@@ -183,8 +183,8 @@ contract SwapTwoChain {
      * @param txID - ID of transaction.
      */
     function isEndLockContract(string memory txID) public view returns(bool) {
-        LockContract storage exchangeTx = transactions[txID];
-        if (exchangeTx.timelock >= block.timestamp)
+        LockContract memory exchangeTx = transactions[txID];
+        if (exchangeTx.timelock <= block.timestamp)
             return true;
         else return false;
     }
