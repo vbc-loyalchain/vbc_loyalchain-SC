@@ -129,17 +129,17 @@ contract SwapTwoChain {
 
     /**
      * 
-     * @param txID - ID of transaction.
+     * @param txId - ID of transaction.
      * @param nonce - Nonce of account.
      * @param signatureAdmin - Signature of admin on txID, address, nonce.
      */
-    function refund(string memory txID, uint256 nonce, bytes memory signatureAdmin) external {
+    function refund(string memory txId, uint256 nonce, bytes memory signatureAdmin) external {
         
-        bytes32 message = keccak256(abi.encodePacked( txID, msg.sender, nonce));
+        bytes32 message = keccak256(abi.encodePacked( txId, msg.sender, nonce));
         bytes32 messageHash = ECDSA.toEthSignedMessageHash(message);
         require(admin == ECDSA.recover(messageHash, signatureAdmin), "Invalid signature");
         
-        LockContract storage exchangeTx = transactions[txID];
+        LockContract storage exchangeTx = transactions[txId];
         require(exchangeTx.withdrawn == false 
                 && exchangeTx.refunded == false, "Can't refund");
         require(exchangeTx.timelock <= block.timestamp, "Too early to refund");
@@ -153,11 +153,11 @@ contract SwapTwoChain {
 
     /**
      * @dev Creator repost their own token from lock contract. 
-     * @param txID - ID of transaction.
+     * @param txId - ID of transaction.
      * @param timelock - Time to lock contract.
      */
-    function repost(string memory txID, uint256 timelock) public {
-        LockContract storage exchangeTx = transactions[txID];
+    function repost(string memory txId, uint256 timelock) public {
+        LockContract storage exchangeTx = transactions[txId];
         
         require(exchangeTx.sender == msg.sender, "Only sender can repost");
         require(exchangeTx.timelock <= block.timestamp, "Too early to repost");
@@ -180,12 +180,23 @@ contract SwapTwoChain {
 
     /**
      * @dev Checks whether the lock contract is over.
-     * @param txID - ID of transaction.
+     * @param txId - ID of transaction.
      */
-    function isEndLockContract(string memory txID) public view returns(bool) {
-        LockContract memory exchangeTx = transactions[txID];
+    function isEndLockContract(string memory txId) public view returns(bool) {
+        require(transactions[txId].sender != address(0), "This transaction doesn't exists");
+        LockContract memory exchangeTx = transactions[txId];
         if (exchangeTx.timelock <= block.timestamp)
             return true;
         else return false;
+    }
+
+    /**
+     * @dev Checks whether the lock contract is refunded.
+     * @param txId - ID of transaction.
+     */
+    function isRefunded(string memory txId) public view returns(bool) {
+        require(transactions[txId].sender != address(0), "This transaction doesn't exists");
+        LockContract memory exchangeTx = transactions[txId];
+        return exchangeTx.refunded;
     }
 } 
