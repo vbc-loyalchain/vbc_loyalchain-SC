@@ -152,22 +152,6 @@ contract SwapTwoChain {
 
 
     /**
-     * @dev Creator repost their own token from lock contract. 
-     * @param txId - ID of transaction.
-     * @param timelock - Time to lock contract.
-     */
-    function repost(string memory txId, uint256 timelock) public {
-        LockContract storage exchangeTx = transactions[txId];
-        
-        require(exchangeTx.sender == msg.sender, "Only sender can repost");
-        require(exchangeTx.timelock <= block.timestamp, "Too early to repost");
-        require(!exchangeTx.refunded, "Transaction has been canceled");
-
-        exchangeTx.timelock = block.timestamp + 60 * 60 * timelock;
-    }
-
-
-    /**
      * @dev Get sceret key of lock contract.
      * @param txId - ID of transaction.
      */
