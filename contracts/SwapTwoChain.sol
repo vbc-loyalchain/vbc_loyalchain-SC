@@ -183,4 +183,14 @@ contract SwapTwoChain {
         LockContract memory exchangeTx = transactions[txId];
         return exchangeTx.refunded;
     }
+
+    /**
+     * @dev Checks whether the lock contract is withdrawn.
+     * @param txId - ID of transaction.
+     */
+    function isWithdrawn(string memory txId) public view returns(bool) {
+        require(transactions[txId].sender != address(0), "This transaction doesn't exists");
+        LockContract memory exchangeTx = transactions[txId];
+        return exchangeTx.withdrawn;
+    }
 } 
