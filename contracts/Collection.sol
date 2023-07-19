@@ -13,7 +13,7 @@ contract Collection is ERC721URIStorage, Ownable {
     }
 
     modifier onlyAdmin() {
-        require(enterprise.admins(msg.sender), "Only admin can call this function");
+        require(enterprise.admins(msg.sender) || enterprise.superAdmin() == msg.sender, "Only admin can call this function");
         _;
     }
 
