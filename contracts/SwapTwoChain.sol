@@ -73,7 +73,7 @@ contract SwapTwoChain {
      * @param from Account that withdrawn token from transaction.
      * @param amount Amount token has been withdrawn.
      */
-    event withdrawn(bytes32 indexed id, address from, uint256 amount);
+    event withdrawn(bytes32 indexed id, address indexed from, uint256 amount);
 
     modifier uniqueOrder(bytes32 id) {
         require(transactions[id].sender == address(0), "Duplicate transaction by id");
