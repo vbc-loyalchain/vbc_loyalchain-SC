@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract SwapTwoChain {
     enum Status {
+        DEFAULT,
         PENDING,
         WITHDRAWN,
         REFUNDED
