@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract SwapTwoChain {
     enum Status {
-        DEFAULT,
         PENDING,
         WITHDRAWN,
         REFUNDED
@@ -78,11 +77,6 @@ contract SwapTwoChain {
      */
     event withdrawn(bytes32 indexed id, address indexed from, uint256 amount);
 
-    modifier uniqueOrder(bytes32 id) {
-        require(transactions[id].sender == address(0), "Duplicate transaction by id");
-        _;
-    }
-
     modifier orderExisted(bytes32 id) {
         require(transactions[id].sender != address(0), "This order doesn't exists");
         _;
@@ -110,7 +104,7 @@ contract SwapTwoChain {
         uint256 amount,
         bytes32 hashlock,
         bool isSeller
-    ) public uniqueOrder(id) {
+    ) public {
         require(msg.sender != receiver, "Transaction invalid");
         bytes32 contractId = isSeller ? createContractId(id, msg.sender, receiver) : createContractId(id, receiver, msg.sender);
         
@@ -173,12 +167,12 @@ contract SwapTwoChain {
     }
 
     /**
-     * @dev Checks whether the order is in progress or not.
+     * @dev Get status of order.
      * @param contractId - ID of transaction.
      */
-    function isInProgress(bytes32 contractId) external view orderExisted(contractId) returns(bool) {
+    function getStatus(bytes32 contractId) external view orderExisted(contractId) returns(Status) {
         LockOrder memory exchangeTx = transactions[contractId];
-        return exchangeTx.status == Status.PENDING;
+        return exchangeTx.status;
     }
 
     /** 
