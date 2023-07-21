@@ -27,41 +27,42 @@ contract SwapTwoChain {
 
 
     /**
-     * @dev Struct of lock contract.
+     * @dev Struct of order.
      * @param sender - Address of sender.
      * @param receiver - Address of receiver.
      * @param tokenContract - Address of token contract.
      * @param amount - Amount of token.
      * @param hashlock - Hash of secret key.
-     * @param status - status of LockContract
+     * @param status - status of LockOrder
      */
-    struct LockContract{
+    struct LockOrder{
         address sender;
         address receiver;
         ERC20 tokenContract;
         uint256 amount;
         string key;
         bytes32 hashlock;
+        uint256 timelock;
         Status status;
     }
 
 
     /**
-     * @dev Mapping of txID to lockContract in the lock.
+     * @dev Mapping of txID to LockOrder in the lock.
      */
-    mapping (bytes32 => LockContract) private transactions;
+    mapping (bytes32 => LockOrder) private transactions;
 
 
     /**
      * @dev Event cancel a transaction.
-     * @param id Id of LockContract.
+     * @param id Id of LockOrder.
      * @param from Address of creator.
      */
     event created(bytes32 indexed id, address indexed from);
 
     /**
      * @dev Event cancel a transaction.
-     * @param id Id of LockContract.
+     * @param id Id of LockOrder.
      * @param from Account that canceled transaction.
      * @param amount Amount token has been refunded.
      */
@@ -70,7 +71,7 @@ contract SwapTwoChain {
 
     /**
      * @dev Event when a account withdrawn token from transaction.
-     * @param id Id of LockContract.
+     * @param id Id of LockOrder.
      * @param from Account that withdrawn token from transaction.
      * @param amount Amount token has been withdrawn.
      */
@@ -93,7 +94,7 @@ contract SwapTwoChain {
 
 
     /**
-     * @dev Create a new lock contract.
+     * @dev Create a new order.
      * @param id - ID of transaction in database which was hashed
      * @param receiver - Address of receiver. 
      * @param token - Address of token contract.
@@ -112,13 +113,14 @@ contract SwapTwoChain {
         require(msg.sender != receiver, "Transaction invalid");
         bytes32 contractId = isSeller ? createContractId(id, msg.sender, receiver) : createContractId(id, receiver, msg.sender);
         
-        transactions[contractId] = LockContract({
+        transactions[contractId] = LockOrder({
             sender: msg.sender,
             receiver: receiver,
             tokenContract: ERC20(token),
             amount: amount,
             key: "",
             hashlock: hashlock,
+            timelock: block.timestamp + 24 hours,
             status: Status.PENDING
         });
 
@@ -128,12 +130,12 @@ contract SwapTwoChain {
 
 
     /** 
-     * @dev Withdraw token from lock contract.
+     * @dev Withdraw token from order.
      * @param contractId - ID of transaction.
-     * @param key - Secret key to unlock contract.
+     * @param key - Secret key to unorder.
      */
     function withdraw(bytes32 contractId, string memory key) external orderExisted(contractId) orderInProgress(contractId) {
-        LockContract storage exchangeTx = transactions[contractId];
+        LockOrder storage exchangeTx = transactions[contractId];
         
         require(exchangeTx.receiver == msg.sender, "Only receiver can withdraw");
         require(keccak256(abi.encodePacked(key)) == exchangeTx.hashlock, "Incorrect key");
@@ -160,7 +162,7 @@ contract SwapTwoChain {
 
         require(admin == ECDSA.recover(messageHash, signatureAdmin), "Invalid signature");
         
-        LockContract storage exchangeTx = transactions[contractId];
+        LockOrder storage exchangeTx = transactions[contractId];
 
         require(exchangeTx.tokenContract.transfer(exchangeTx.sender,  exchangeTx.amount), "Refund failed");
 
@@ -170,21 +172,29 @@ contract SwapTwoChain {
     }
 
     /**
-     * @dev Checks whether the lock contract is in progress or not.
+     * @dev Checks whether the order is in progress or not.
      * @param contractId - ID of transaction.
      */
     function isInProgress(bytes32 contractId) external view orderExisted(contractId) returns(bool) {
-        LockContract memory exchangeTx = transactions[contractId];
+        LockOrder memory exchangeTx = transactions[contractId];
         return exchangeTx.status == Status.PENDING;
     }
 
     /** 
-     * @dev Get secret key of lock contract 
+     * @dev Get secret key of order 
      * @param contractId - ID of transaction.
      */
     function getSecretKey(bytes32 contractId) external view orderExisted(contractId) returns(string memory) {
         require(msg.sender == transactions[contractId].sender, "Only owner can get secret key");
         return transactions[contractId].key;
+    }
+
+    /** 
+     * @dev Get timelock of order 
+     * @param contractId - ID of transaction.
+     */
+    function getTimelock(bytes32 contractId) external view orderExisted(contractId) returns(uint256) {
+        return transactions[contractId].timelock;
     }
 
     /**
