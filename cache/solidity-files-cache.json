@@ -923,10 +923,17 @@
         "Swapper"
       ]
     },
+<<<<<<< HEAD
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\SwapTwoChain.sol": {
+      "lastModificationDate": 1689953962562,
+      "contentHash": "40804720f5d71fef2ca3d5615f075939",
+      "sourceName": "contracts/SwapTwoChain.sol",
+=======
     "C:\\Users\\PC\\Desktop\\VBC_LoyalChain\\vbc_loyalchain-SC\\contracts\\FauceToken.sol": {
       "lastModificationDate": 1689949622736,
       "contentHash": "8ed9832b540c9406abd5388530936472",
       "sourceName": "contracts/FauceToken.sol",
+>>>>>>> main
       "solcConfig": {
         "version": "0.8.18",
         "settings": {
