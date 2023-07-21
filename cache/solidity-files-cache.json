@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\Token.sol": {
-      "lastModificationDate": 1688713777175,
-      "contentHash": "ef775bc916ce53fecb36ba07bc046be7",
+      "lastModificationDate": 1689785112609,
+      "contentHash": "e20db526260eac8bd7bc00277a959380",
       "sourceName": "contracts/Token.sol",
       "solcConfig": {
         "version": "0.8.18",
@@ -29,11 +29,10 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
       ],
       "versionPragmas": [
-        "^0.8.0"
+        "0.8.18"
       ],
       "artifacts": [
         "Token"
@@ -698,44 +697,6 @@
         "ERC721URIStorage"
       ]
     },
-    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\NFT.sol": {
-      "lastModificationDate": 1687793485718,
-      "contentHash": "286418f5cb3f979ed777af467196c880",
-      "sourceName": "contracts/NFT.sol",
-      "solcConfig": {
-        "version": "0.8.18",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "MyNFT"
-      ]
-    },
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
       "lastModificationDate": 1688383467068,
       "contentHash": "5a20b2cad87ddb61c7a3a6af21289e28",
@@ -771,43 +732,6 @@
       ],
       "artifacts": [
         "Ownable"
-      ]
-    },
-    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\HTLC.sol": {
-      "lastModificationDate": 1688713772501,
-      "contentHash": "3b0feed4cb61c1876d24d0c80bcf94ca",
-      "sourceName": "contracts/HTLC.sol",
-      "solcConfig": {
-        "version": "0.8.18",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./Token.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "HTLC"
       ]
     },
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\node_modules\\@openzeppelin\\contracts\\utils\\cryptography\\ECDSA.sol": {
@@ -848,8 +772,8 @@
       ]
     },
     "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\Swapper.sol": {
-      "lastModificationDate": 1688719246083,
-      "contentHash": "e7b13c6ef0dab75604e8b6082c64c8f6",
+      "lastModificationDate": 1689785162839,
+      "contentHash": "9bb14d547b233779f24ca7ad28d7fe55",
       "sourceName": "contracts/Swapper.sol",
       "solcConfig": {
         "version": "0.8.18",
@@ -875,14 +799,128 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.8.18"
+      ],
+      "artifacts": [
+        "Swapper"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\Collection.sol": {
+      "lastModificationDate": 1689785239644,
+      "contentHash": "78e611a7487c48967dd66d8cbd454b01",
+      "sourceName": "contracts/Collection.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
         "./Token.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "Swapper"
+        "Collection"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\NFTMarket.sol": {
+      "lastModificationDate": 1689785253075,
+      "contentHash": "35ef9a6ecd248e4b961eee41b86f07de",
+      "sourceName": "contracts/NFTMarket.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Collection.sol",
+        "./Token.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "NFTMarket"
+      ]
+    },
+    "D:\\HK222\\Intern\\vbc_loyalchain-SC\\contracts\\SwapTwoChain.sol": {
+      "lastModificationDate": 1689921320192,
+      "contentHash": "184a50d6af2a655b7cbf41dd0234f81f",
+      "sourceName": "contracts/SwapTwoChain.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"
+      ],
+      "versionPragmas": [
+        "0.8.18"
+      ],
+      "artifacts": [
+        "SwapTwoChain"
       ]
     }
   }

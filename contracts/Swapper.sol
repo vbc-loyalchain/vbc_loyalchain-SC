@@ -1,96 +1,104 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.18;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./Token.sol";
 
 contract Swapper {
-    struct LockContract {
-        address from;
-        address to;
-        Token token_from;
-        Token token_to;
-        uint256 amount_from;
-        uint256 amount_to;
-        uint256 timelock;
-        bool completed;
-        bool refunded;
+    enum Status {
+        PENDING,
+        COMPLETED,
+        REFUNDED
     }
 
-    mapping(string => LockContract) transactions;
+    struct Order {
+        address from;
+        ERC20 token_from;
+        ERC20 token_to;
+        uint256 amount_from;
+        uint256 amount_to;
+        Status status;
+    }
 
-    event canceled(string indexed txId, address indexed from, uint256 amount);
+    mapping(bytes32 => Order) public transactions;
 
-    event accepted(string indexed txId, address indexed to);
+    event created(bytes32 indexed txId, address indexed from);
 
-    event swapSuccessfully(string indexed txId, address indexed from, address indexed to);
+    event canceled(bytes32 indexed txId, address indexed from, uint256 amount);
+
+    event accepted(bytes32 indexed txId, address indexed to, uint256 amount);
+
+    event swapSuccessfully(bytes32 indexed txId, address indexed from, address indexed to);
+
+    modifier uniqueOrder(bytes32 id) {
+        require(transactions[id].from == address(0), "Duplicate order by id");
+        _;
+    }
+
+    modifier orderExisted(bytes32 id) {
+        require(transactions[id].from != address(0), "This order doesn't exists");
+        _;
+    }
+
+    modifier orderInProgress(bytes32 id) {
+        require(transactions[id].status == Status.PENDING, "This transaction has been done");
+        _;
+    }
 
     constructor() {}
 
     function createTx(
-        string memory id, 
+        bytes32 id, 
         address tokenFrom, 
         address tokenTo, 
         uint256 amountFrom, 
-        uint256 amountTo,
-        uint256 timelock, //hours
-        bytes memory signature //signature of msg.sender
-    ) public returns (bool) {
-        require(transactions[id].from == address(0), "Duplicate transaction by id");
+        uint256 amountTo
+    ) public uniqueOrder(id) {
         require(tokenFrom != tokenTo, "Only swap between two different token");
-        transactions[id] = LockContract({
+        transactions[id] = Order({
             from: msg.sender,
-            to: address(0),
-            token_from: Token(tokenFrom),
-            token_to: Token(tokenTo),
+            token_from: ERC20(tokenFrom),
+            token_to: ERC20(tokenTo),
             amount_from: amountFrom,
             amount_to: amountTo,
-            timelock: block.timestamp + 60 * 60 * timelock,
-            completed: false,
-            refunded: false
+            status: Status.PENDING
         });
 
-        transactions[id].token_from.transferToBridge(msg.sender, transactions[id].amount_from, signature);
-        return true;
+        require(transactions[id].token_from.transferFrom(msg.sender, address(this), transactions[id].amount_from), "Transfer to contract failed");
+        emit created(id, msg.sender);
     }
 
-    function acceptTx(string memory txId, bytes memory signature) external { //signature: signature of msg.sender
-        LockContract storage exchangeTx = transactions[txId];
-        require(exchangeTx.from != address(0), "This transaction doesn't exists");
-        require(exchangeTx.completed != true && exchangeTx.refunded != true, "This transaction has been done");
-        require(exchangeTx.to == address(0), "This transaction has been accepted by another user");
+    function acceptTx(bytes32 txId) orderExisted(txId) orderInProgress(txId) external { 
+        Order storage exchangeTx = transactions[txId];
+
         require(exchangeTx.from != msg.sender, "Can't accept by your self! =))");
         
-        exchangeTx.to = msg.sender;
-        exchangeTx.token_to.transferToBridge(exchangeTx.to, exchangeTx.amount_to, signature);
-        emit accepted(txId, msg.sender);
+        require(exchangeTx.token_to.transferFrom(msg.sender, address(this), exchangeTx.amount_to), "Transfer to contract failed");
 
         swap(txId);
+
+        emit accepted(txId, msg.sender, exchangeTx.amount_to);
     }
 
-    function refund(string memory txId) external {
-        LockContract storage exchangeTx = transactions[txId];
-        require(exchangeTx.completed == false 
-                && exchangeTx.refunded == false, "Can't refund");
-        require(exchangeTx.to == address(0), "Transaction is in progress");
-        require(exchangeTx.timelock <= block.timestamp, "Too early to refund");
+    function refund(bytes32 txId) orderExisted(txId) orderInProgress(txId) external {
+        Order storage exchangeTx = transactions[txId];
 
-        exchangeTx.token_from.transfer(exchangeTx.from,  exchangeTx.amount_from);
-        exchangeTx.refunded = true;
+        require(exchangeTx.from == msg.sender, "Only owner can refund this transaction");
+
+        require(exchangeTx.token_from.transfer(exchangeTx.from,  exchangeTx.amount_from), "Refund failed");
+
+        exchangeTx.status = Status.REFUNDED;
+
         emit canceled(txId, exchangeTx.from, exchangeTx.amount_from);
     }
 
-    function swap(string memory txId) internal {
-        LockContract storage exchangeTx = transactions[txId];
+    function swap(bytes32 txId) internal {
+        Order storage exchangeTx = transactions[txId];
         
-        exchangeTx.token_from.transfer(exchangeTx.to, exchangeTx.amount_from);
-        exchangeTx.token_to.transfer(exchangeTx.from, exchangeTx.amount_to);
+        require(exchangeTx.token_from.transfer(msg.sender, exchangeTx.amount_from), "Swap failed");
+        require(exchangeTx.token_to.transfer(exchangeTx.from, exchangeTx.amount_to), "Swap failed");
 
-        exchangeTx.completed = true;
-        emit swapSuccessfully(txId, exchangeTx.from,  exchangeTx.to);
-    }
+        exchangeTx.status = Status.COMPLETED;
 
-    function txInfo(string memory id) public view returns (LockContract memory) {
-        return  transactions[id];
+        emit swapSuccessfully(txId, exchangeTx.from, msg.sender);
     }
 }
