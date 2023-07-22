@@ -50,7 +50,7 @@ contract SwapTwoChain {
     /**
      * @dev Mapping of txID to LockOrder in the lock.
      */
-    mapping (bytes32 => LockOrder) private transactions;
+    mapping (bytes32 => LockOrder) public transactions;
 
 
     /**
@@ -107,7 +107,8 @@ contract SwapTwoChain {
     ) public {
         require(msg.sender != receiver, "Transaction invalid");
         bytes32 contractId = isSeller ? createContractId(id, msg.sender, receiver) : createContractId(id, receiver, msg.sender);
-        
+        require(transactions[contractId].sender == address(0), "Dupplicate order by ID");
+
         transactions[contractId] = LockOrder({
             sender: msg.sender,
             receiver: receiver,
@@ -164,32 +165,6 @@ contract SwapTwoChain {
         exchangeTx.status = Status.REFUNDED;
         
         emit canceled(contractId, exchangeTx.sender, exchangeTx.amount);
-    }
-
-    /**
-     * @dev Get status of order.
-     * @param contractId - ID of transaction.
-     */
-    function getStatus(bytes32 contractId) external view orderExisted(contractId) returns(Status) {
-        LockOrder memory exchangeTx = transactions[contractId];
-        return exchangeTx.status;
-    }
-
-    /** 
-     * @dev Get secret key of order 
-     * @param contractId - ID of transaction.
-     */
-    function getSecretKey(bytes32 contractId) external view orderExisted(contractId) returns(string memory) {
-        require(msg.sender == transactions[contractId].sender, "Only owner can get secret key");
-        return transactions[contractId].key;
-    }
-
-    /** 
-     * @dev Get timelock of order 
-     * @param contractId - ID of transaction.
-     */
-    function getTimelock(bytes32 contractId) external view orderExisted(contractId) returns(uint256) {
-        return transactions[contractId].timelock;
     }
 
     /**
